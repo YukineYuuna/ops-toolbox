@@ -1,98 +1,84 @@
 # 运维工具箱
 
-一个离线优先、跨平台的桌面运维工作台。它使用本地 Python 工具执行系统诊断与维护，并提供响应式毛玻璃界面、明暗主题、可调字号、壁纸轮播、收藏/最近使用和 AI 故障分流。
+电脑出现断网、系统变慢、磁盘空间不足、软件更新失败、开机异常等问题时，很多人不知道该从哪里开始排查。
 
-项目为 Windows、macOS、Linux 分别维护工具目录。平台不同，显示的操作也不同：Windows 使用 PowerShell、DISM、SFC、Winsock、注册表和系统管理工具；macOS 使用 `dscacheutil`、`diskutil`、`launchctl`、FileVault、Gatekeeper、Time Machine 等；Linux 自动适配 `systemd`、NetworkManager、`ufw/firewalld/nftables`、`apt/dnf/pacman/zypper`、SMART 和桌面环境工具。
+**运维工具箱**把常用的检查和修复操作放在一个简单的工作台里，并针对 Windows、macOS、Linux 提供各自适用的工具。你可以先让内置 AI 助手分析问题，再按建议逐项检查，不需要记住一长串命令。
 
-## 功能概览
+## 适合做什么
 
-| 模块 | 说明 |
-| --- | --- |
-| 网络修复 | DNS、DHCP/IP、ARP、网关、公网连通、监听端口和网络服务诊断 |
-| 系统与启动 | Windows SFC/DISM/BCD，Linux systemd 启动分析，macOS 系统卷验证 |
-| 清理与存储 | 临时文件、浏览器缓存、回收站、日志、大文件、磁盘布局和 SMART |
-| 安全与服务 | 防火墙、FileVault、Gatekeeper/SIP、失败登录、失败服务和启动项 |
-| 性能与信息 | CPU、内存、电池、温度、磁盘、系统版本、已安装软件和运行服务 |
-| 本地 AI 助手 | 默认离线关键词分流；可选本机 Ollama；可选 OpenAI 兼容 HTTPS 接口 |
-| 壁纸 | 内置离线 WebP 兜底；桌面端可多次触发 API 请求并缓存去重后的新图 |
+- **网络问题**：刷新 DNS、重新获取 IP、检查网关和端口，排查“能连 Wi-Fi 但打不开网页”等问题。
+- **系统修复**：Windows 的 SFC/DISM 和网络组件修复，macOS 系统卷检查，Linux 服务与启动分析。
+- **清理空间**：清理临时文件、浏览器缓存、回收站和日志，查找占用空间较大的文件。
+- **安全检查**：查看防火墙、FileVault、Gatekeeper、失败登录和异常服务状态。
+- **性能与硬件**：查看 CPU、内存、磁盘、电池、温度和系统运行情况。
+- **系统工具**：快速打开任务管理器、活动监视器、终端、文件管理器和系统设置。
 
-当前目录规模：Windows 78 项、macOS 44 项、Linux 43 项。每个平台只显示适合该系统的命令和管理入口。
+当前包含 Windows 78 项、macOS 44 项、Linux 43 项工具。程序会自动识别系统，只显示适合当前平台的功能。
 
-## 直接使用网页版
+## AI 助手怎么用
 
-打开仓库的 GitHub Pages 地址即可使用，无需下载或安装。网页版会自动识别浏览器平台，也可以在页面顶部切换 Windows、macOS、Linux 工具目录。浏览器安全沙箱不允许网页直接执行本机命令，因此网页版提供完整的目录浏览、搜索、收藏、主题、字号、壁纸和离线 AI 推荐；需要清理磁盘、重启服务、修改防火墙等操作时，请下载桌面端。
+打开右上角的 **AI 助手**，直接用日常语言描述问题，例如：
 
-发布后地址为：`https://<你的 GitHub 用户名>.github.io/<仓库名>/`。`pages.yml` 会在 `main` 分支更新后自动部署。
+> Wi-Fi 能连接，但是网页打不开，应该怎么办？
 
-## 下载桌面端
+助手会根据当前系统的工具目录给出排查顺序和对应工具。它只会推荐已有功能，不会假装已经替你执行命令。
 
-进入 [Releases](../../releases/latest) 下载对应文件：
+- 默认使用**离线诊断**，不需要网络，也不会上传问题。
+- 如果电脑安装了 Ollama，可以切换到本机模型。
+- 也可以自行配置兼容的在线模型接口；只有主动配置后，问题内容才会发送到该接口。
 
-- **Windows**：`OpsToolbox-windows.exe`，下载后双击运行。需要管理员权限的工具会在执行前提示。
-- **macOS**：`OpsToolbox-macos.app.zip`，解压后打开 App。首次运行若出现 Gatekeeper 提示，请在“系统设置 → 隐私与安全性”中允许；正式分发时建议由发布者签名和公证。
-- **Linux**：`OpsToolbox-linux.tar.gz`，解压后运行 `./Linux运维工具箱`。桌面 WebView 需要 WebKitGTK；Debian/Ubuntu 可执行：
+## 三步开始使用
+
+1. 下载与你的系统对应的版本，或直接打开网页版。
+2. 先打开 AI 助手描述问题，也可以使用搜索框查找工具。
+3. 阅读工具说明后运行。带有“有风险”“管理员”或“需重启”提示的操作，会在执行前再次确认。
+
+## 在线网页版
+
+无需下载，打开即可使用：[运维工具箱网页版](https://yukineyuuna.github.io/ops-toolbox/)
+
+网页版可以浏览全部工具、搜索问题、使用离线 AI 推荐、切换 Windows/macOS/Linux 目录、收藏工具、调整字体和主题。由于浏览器不能直接修改本机系统，清理文件、重启服务、修改防火墙等操作需要使用桌面版。
+
+## 下载桌面版
+
+前往 [最新版本下载页](https://github.com/YukineYuuna/ops-toolbox/releases/latest)，选择对应文件：
+
+- [Windows：OpsToolbox-windows.exe](https://github.com/YukineYuuna/ops-toolbox/releases/download/v3.1.0/OpsToolbox-windows.exe)
+  下载后双击即可运行；需要管理员权限的操作会在执行时提示。
+- [macOS：OpsToolbox-macos.app.zip](https://github.com/YukineYuuna/ops-toolbox/releases/download/v3.1.0/OpsToolbox-macos.app.zip)
+  解压后打开 App。首次打开若被系统拦截，请在“系统设置 → 隐私与安全性”中允许。
+- [Linux：OpsToolbox-linux.tar.gz](https://github.com/YukineYuuna/ops-toolbox/releases/download/v3.1.0/OpsToolbox-linux.tar.gz)
+  解压后运行 `./Linux运维工具箱`。如果界面无法启动，请先安装 WebKitGTK：
 
   ```bash
   sudo apt install python3-gi gir1.2-webkit2-4.1
   ```
 
-Release 由 GitHub Actions 在真实的 `windows-latest`、`macos-latest` 和 `ubuntu-22.04` 运行器上构建。每个平台还会运行 Python 编译检查和工具目录契约测试。
+## 离线使用和隐私
+
+- 核心工具、界面、收藏记录和离线 AI 推荐都在本机运行，断网仍可使用。
+- 壁纸联网更新只是可选功能；网络不可用时会继续使用本地壁纸缓存。
+- 桌面端执行系统操作前会检查权限，并对可能有影响的操作再次确认。重要操作前请先保存工作并做好备份。
+- 使用在线 AI 时，请不要发送密码、API Key、个人隐私或不必要的系统日志。
 
 ## 从源码运行
 
-需要 Python 3.10+：
+如果你希望自己运行或参与改进，准备 Python 3.10 或更高版本：
 
 ```bash
 python -m pip install -r requirements.txt
 python 运维工具箱.py
 ```
 
-macOS 可双击 `运维工具箱_mac.command`，Linux 可执行 `chmod +x 运维工具箱_linux.sh && ./运维工具箱_linux.sh`。如果没有 pywebview，程序会尝试使用 Tkinter 兼容界面。
+macOS 可以双击 `运维工具箱_mac.command`，Linux 可以运行 `chmod +x 运维工具箱_linux.sh && ./运维工具箱_linux.sh`。
 
-## 离线与联网边界
-
-- 核心工具、界面资源、收藏、最近使用和离线 AI 推荐均在本机运行，不依赖网络。
-- 壁纸 API 仅用于联网增强；下载失败、断网或接口重复返回时，继续使用本地缓存。
-- AI 默认是“离线推荐”，不会上传用户问题。Ollama 请求发往本机 `127.0.0.1`；在线兼容接口只有在用户主动配置 API Key 后才会发送问题，并强制要求 HTTPS。
-- API Key 默认只保存在当前会话；勾选“记住 Key”后写入用户配置目录的权限受限文件。不要把该文件提交到 Git。
-
-## 配置与安全
-
-配置目录：
-
-- Windows：`%APPDATA%\\OpsToolbox`
-- macOS：`~/Library/Application Support/OpsToolbox`
-- Linux：`$XDG_CONFIG_HOME/ops-toolbox` 或 `~/.config/ops-toolbox`
-
-壁纸接口地址通过环境变量 `TOOLBOX_WALLPAPER_API_URL` 配置。项目不会在公开代码中内置访问令牌；如使用需要令牌的接口，请在本机环境变量中设置完整 URL。壁纸提供方控制图片版权，公开再分发前请确认图片和 API 的使用条款。
-
-带“有风险”“管理员”或“需重启”标签的操作可能修改系统状态。工具详情页会再次确认，仍建议先运行只读检查并确保有备份。
-
-## 构建
-
-本地构建命令：
-
-```bash
-# Windows
-python -m PyInstaller --clean --noconfirm Windows运维工具箱_v3.spec
-
-# macOS
-python -m PyInstaller --clean --noconfirm macOS运维工具箱.spec
-
-# Linux
-python -m PyInstaller --clean --noconfirm Linux运维工具箱.spec
-```
-
-提交到 `main` 或推送 `v*.*.*` 标签会触发 `.github/workflows/build.yml`。推送版本标签后，三个构建任务会把安装包附加到同一个 GitHub Release。
-
-## 项目结构
+## 项目组成
 
 ```text
-运维工具箱.py          启动器
-modules/                平台检测、工具实现、WebView 桥接和壁纸缓存
-web/                    毛玻璃界面、Lucide 图标和离线壁纸
-tests/                  跨平台工具目录契约测试
-.github/workflows/      三端构建与 GitHub Pages 部署
+运维工具箱.py       启动程序
+modules/             平台工具、AI 助手和壁纸缓存
+web/                 桌面端与网页版界面
+tests/               跨平台工具目录检查
 ```
 
-本项目暂未指定开源许可证。若要以特定许可证发布，请在仓库设置中明确添加与项目依赖兼容的许可证文件。
+项目会持续补充更实用的诊断和修复功能。欢迎通过 [Issues](https://github.com/YukineYuuna/ops-toolbox/issues) 反馈问题或提出建议。
