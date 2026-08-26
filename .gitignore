@@ -1,0 +1,31 @@
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+.pytest_cache/
+
+# PyInstaller and local build output
+build/
+dist/
+*.log
+
+# Historical copies and scratch files
+备份_*/
+debug.bat
+run.bat
+run.ps1
+remove_view_all.py
+restore_dark.py
+运维工具箱.html
+wznav*.html
+wznav.css
+functions.json
+functions_utf8.json
+
+# Per-user runtime state
+.idea/
+.vscode/
+*.spec.bak

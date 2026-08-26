@@ -1,0 +1,80 @@
+name: Build desktop releases
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*.*.*"]
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Windows
+            os: windows-latest
+            spec: Windows运维工具箱_v3.spec
+            artifact: OpsToolbox-windows.exe
+          - name: macOS
+            os: macos-latest
+            spec: macOS运维工具箱.spec
+            artifact: OpsToolbox-macos.app.zip
+          - name: Linux
+            os: ubuntu-22.04
+            spec: Linux运维工具箱.spec
+            artifact: OpsToolbox-linux.tar.gz
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install Linux WebView dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-gi gir1.2-webkit2-4.1 libgirepository1.0-dev libcairo2-dev pkg-config
+      - name: Install Python dependencies
+        run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt pyinstaller
+      - name: Validate Python and catalogs
+        run: |
+          python -m compileall -q modules 运维工具箱.py tests
+          python -m unittest discover -s tests -v
+      - name: Build Windows executable
+        if: runner.os == 'Windows'
+        run: python -m PyInstaller --clean --noconfirm "${{ matrix.spec }}"
+      - name: Build macOS application
+        if: runner.os == 'macOS'
+        run: python -m PyInstaller --clean --noconfirm "${{ matrix.spec }}" && ditto -c -k --sequesterRsrc --keepParent "dist/macOS运维工具箱.app" "dist/${{ matrix.artifact }}"
+      - name: Build Linux executable
+        if: runner.os == 'Linux'
+        run: python -m PyInstaller --clean --noconfirm "${{ matrix.spec }}" && tar -C dist -czf "dist/${{ matrix.artifact }}" "Linux运维工具箱"
+      - name: Stage Windows artifact
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: Copy-Item "dist\Windows运维工具箱_v3.exe" "dist\${{ matrix.artifact }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}
+          path: dist/${{ matrix.artifact }}
+          if-no-files-found: error
+  release:
+    name: Publish GitHub Release
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: release-assets/*
+          generate_release_notes: true

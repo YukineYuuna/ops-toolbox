@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark light">
+  <title>运维工具箱</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme="dark">
+  <div class="wallpaper wallpaper-a" id="wallpaperA" aria-hidden="true"></div>
+  <div class="wallpaper wallpaper-b" id="wallpaperB" aria-hidden="true"></div>
+  <div class="ambient-scrim" aria-hidden="true"></div>
+
+  <header class="mobile-bar glass" id="mobileBar">
+    <button class="icon-btn" id="menuBtn" title="打开菜单" aria-label="打开菜单"><i data-lucide="menu"></i></button>
+    <div class="mobile-brand"><span id="mobileAppName">运维工具箱</span><small id="mobilePlatform">LOCAL</small></div>
+    <button class="icon-btn" data-open-assistant title="AI 助手" aria-label="AI 助手"><i data-lucide="sparkles"></i></button>
+  </header>
+
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+  <aside class="sidebar glass" id="sidebar">
+    <div class="brand-row">
+      <div class="brand-mark"><i data-lucide="blocks"></i></div>
+      <div class="brand-copy">
+        <strong id="appName">运维工具箱</strong>
+        <span><b id="platformLabel">Windows</b> <span id="appVersion">v3.1</span></span>
+      </div>
+      <button class="icon-btn sidebar-close" id="sidebarClose" title="关闭菜单" aria-label="关闭菜单"><i data-lucide="x"></i></button>
+    </div>
+
+    <label class="search-box sidebar-search">
+      <i data-lucide="search"></i>
+      <input id="sidebarSearch" type="search" placeholder="搜索工具" autocomplete="off">
+      <kbd>⌘K</kbd>
+    </label>
+
+    <nav class="nav-list" id="sidebarNav" aria-label="主导航"></nav>
+
+    <div class="sidebar-foot">
+      <button class="status-chip" id="connectionStatus" title="核心功能始终可离线使用">
+        <span class="status-dot"></span><span>离线核心就绪</span>
+      </button>
+      <div class="sidebar-actions">
+        <button class="icon-btn" id="wallpaperNext" title="下一张壁纸" aria-label="下一张壁纸"><i data-lucide="image"></i></button>
+        <button class="icon-btn" id="wallpaperRefresh" title="多次访问樱道 API 获取新壁纸" aria-label="更新壁纸"><i data-lucide="refresh-cw"></i></button>
+        <button class="icon-btn" id="themeToggle" title="切换明暗模式" aria-label="切换明暗模式"><i data-lucide="sun-moon"></i></button>
+        <button class="icon-btn" id="settingsOpen" title="外观与 AI 设置" aria-label="外观与 AI 设置"><i data-lucide="settings-2"></i></button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="app-shell" id="appShell">
+    <header class="topbar glass">
+      <div class="title-block">
+        <span class="eyebrow" id="viewEyebrow">工作台</span>
+        <h1 id="viewTitle">系统概览</h1>
+      </div>
+      <label class="search-box top-search">
+        <i data-lucide="search"></i>
+        <input id="topSearch" type="search" placeholder="搜索工具、故障或命令" autocomplete="off">
+        <kbd>Ctrl K</kbd>
+      </label>
+      <div class="top-actions">
+        <button class="status-pill" id="adminStatus" title="当前权限"><i data-lucide="shield-check"></i><span>标准权限</span></button>
+        <button class="icon-btn" id="logToggle" title="运行日志" aria-label="运行日志"><i data-lucide="terminal-square"></i><b id="logBadge">0</b></button>
+        <button class="assistant-button" data-open-assistant><i data-lucide="sparkles"></i><span>AI 助手</span></button>
+      </div>
+    </header>
+
+    <section class="browser-notice glass" id="browserNotice" hidden>
+      <span class="browser-notice-icon"><i data-lucide="monitor-smartphone"></i></span>
+      <div><strong>网页版安全模式</strong><p>浏览器不能直接修改本机系统。你可以浏览工具、搜索故障、使用离线 AI 推荐；需要执行命令时，请下载对应平台桌面端。</p></div>
+      <label>工具平台<select id="browserPlatform"><option value="windows">Windows</option><option value="macos">macOS</option><option value="linux">Linux</option></select></label>
+    </section>
+
+    <div class="content" id="content" aria-live="polite">
+      <div class="loading-state"><span class="spinner"></span><span>正在加载本地工具目录</span></div>
+    </div>
+
+    <nav class="floating-dock glass" id="floatingDock" aria-label="快捷分类"></nav>
+  </main>
+
+  <aside class="assistant-drawer glass" id="assistantDrawer" aria-label="AI 助手">
+    <header class="drawer-head">
+      <div><span class="eyebrow" id="assistantMode">离线诊断</span><h2>AI 运维助手</h2></div>
+      <button class="icon-btn" data-close-assistant title="关闭" aria-label="关闭"><i data-lucide="x"></i></button>
+    </header>
+    <div class="assistant-messages" id="assistantMessages">
+      <div class="message assistant"><span class="message-icon"><i data-lucide="sparkles"></i></span><p>请描述遇到的问题。</p></div>
+    </div>
+    <div class="assistant-suggestions" id="assistantSuggestions"></div>
+    <form class="assistant-compose" id="assistantForm">
+      <textarea id="assistantInput" rows="2" placeholder="例如：Wi-Fi 能连接但打不开网页"></textarea>
+      <button class="primary-icon-btn" type="submit" title="发送" aria-label="发送"><i data-lucide="send"></i></button>
+    </form>
+  </aside>
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+
+  <section class="log-drawer glass" id="logDrawer" aria-label="运行日志">
+    <header class="drawer-head compact">
+      <div><span class="eyebrow" id="taskState">就绪</span><h2>运行日志</h2></div>
+      <div class="log-head-actions"><button class="icon-btn" id="logClear" title="清空显示" aria-label="清空显示"><i data-lucide="eraser"></i></button><button class="icon-btn" id="logClose" title="关闭" aria-label="关闭"><i data-lucide="x"></i></button></div>
+    </header>
+    <div class="log-output" id="logOutput"><div class="log-empty">暂无运行记录</div></div>
+  </section>
+
+  <dialog class="modal glass" id="toolModal">
+    <button class="icon-btn modal-close" data-close-modal title="关闭" aria-label="关闭"><i data-lucide="x"></i></button>
+    <div class="tool-modal-head"><span class="large-icon" id="modalIcon"><i data-lucide="wrench"></i></span><div><span class="eyebrow" id="modalCategory">系统工具</span><h2 id="modalTitle">工具详情</h2></div></div>
+    <p class="modal-desc" id="modalDesc"></p>
+    <div class="tag-row" id="modalTags"></div>
+    <div class="modal-actions"><button class="secondary-button" id="modalFavorite"><i data-lucide="star"></i><span>收藏</span></button><button class="primary-button" id="modalRun"><i data-lucide="play"></i><span>运行工具</span></button></div>
+  </dialog>
+
+  <dialog class="modal confirm-modal glass" id="confirmModal">
+    <span class="large-icon warning"><i data-lucide="triangle-alert"></i></span>
+    <h2 id="confirmTitle">确认操作</h2>
+    <p class="modal-desc" id="confirmText"></p>
+    <div class="modal-actions"><button class="secondary-button" id="confirmCancel">取消</button><button class="danger-button" id="confirmProceed">确认运行</button></div>
+  </dialog>
+
+  <dialog class="settings-modal glass" id="settingsModal">
+    <header class="drawer-head"><div><span class="eyebrow">本地偏好</span><h2>设置</h2></div><button class="icon-btn" data-close-settings title="关闭" aria-label="关闭"><i data-lucide="x"></i></button></header>
+    <form id="settingsForm">
+      <section class="settings-section">
+        <h3>外观</h3>
+        <div class="setting-row"><label for="themeSelect">模式</label><select id="themeSelect"><option value="dark">夜间</option><option value="light">日间</option></select></div>
+        <div class="setting-row slider-row"><label for="fontScale">字体大小 <output id="fontScaleValue">108%</output></label><input id="fontScale" type="range" min="85" max="140" step="5" value="108"></div>
+        <div class="setting-row"><label for="wallpaperSelect">壁纸</label><select id="wallpaperSelect"></select></div>
+        <div class="setting-row"><label for="wallpaperAuto">自动轮播</label><input id="wallpaperAuto" type="checkbox" class="switch"></div>
+      </section>
+      <section class="settings-section">
+        <h3>AI 助手</h3>
+        <div class="setting-row"><label for="aiProvider">模式</label><select id="aiProvider"><option value="offline">离线推荐</option><option value="ollama">本机 Ollama</option><option value="openai">在线兼容接口</option></select></div>
+        <div class="setting-row ai-field"><label for="aiEndpoint">接口地址</label><input id="aiEndpoint" type="url" autocomplete="off"></div>
+        <div class="setting-row ai-field"><label for="aiModel">模型</label><input id="aiModel" type="text" autocomplete="off"></div>
+        <div class="setting-row ai-key-field"><label for="aiKey">API Key</label><input id="aiKey" type="password" placeholder="仅在线模式需要" autocomplete="new-password"></div>
+        <div class="setting-row ai-key-field"><label for="rememberKey">记住 Key</label><input id="rememberKey" type="checkbox" class="switch"></div>
+      </section>
+      <div class="settings-actions"><button class="secondary-button" type="button" id="openConfig"><i data-lucide="folder-cog"></i><span>数据目录</span></button><button class="primary-button" type="submit"><i data-lucide="save"></i><span>保存设置</span></button></div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status"></div>
+  <script src="vendor/lucide.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
