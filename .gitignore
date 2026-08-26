@@ -29,3 +29,7 @@ functions_utf8.json
 .idea/
 .vscode/
 *.spec.bak
+
+# Temporary browser profiles used for local screenshots
+_*/
+docs_demo_*.png
